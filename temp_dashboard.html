@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregador de Notícias - Home</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap');
+
+        :root {
+            --bg-color: #202124;
+            --card-bg: #202124;
+            --text-primary: #e8eaed;
+            --text-secondary: #9aa0a6;
+            --border-color: #3c4043;
+            --accent-blue: #8ab4f8;
+            --ai-verified: #81c995;
+            --ai-alert: #f28b82;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        /* Cabeçalho */
+        header {
+            background-color: #202124;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 22px;
+            font-weight: 500;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-bar {
+            background-color: #303134;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 10px 20px;
+            width: 500px;
+            color: white;
+            font-family: 'Google Sans', sans-serif;
+        }
+
+        /* Estrutura Principal */
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 32px;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 24px;
+        }
+
+        h2 {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 22px;
+            font-weight: 400;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        /* Cartões de Notícias do Feed */
+        .news-card {
+            display: flex;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .news-content {
+            flex: 1;
+        }
+
+        .news-source {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .news-title {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0 0 10px 0;
+            color: var(--accent-blue);
+            cursor: pointer;
+        }
+
+        .news-title:hover {
+            text-decoration: underline;
+        }
+
+        .news-snippet {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .news-thumbnail {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: cover;
+            background-color: #303134;
+        }
+
+        /* Selos da IA (Groq Fact-Checking) */
+        .ai-badges {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .chip {
+            padding: 4px 10px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: #303134;
+        }
+
+        .chip.verified { color: var(--ai-verified); border: 1px solid rgba(129, 201, 149, 0.3); }
+        .chip.alert { color: var(--ai-alert); border: 1px solid rgba(242, 139, 130, 0.3); }
+
+        /* Barra Lateral (Biblioteca Pessoal & Clima) */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .widget-box {
+            background-color: #303134;
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .widget-title {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 16px;
+            margin: 0 0 16px 0;
+            color: var(--text-primary);
+        }
+
+        /* Widget de Clima */
+        .weather-widget {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+            
+        .weather-temp { font-size: 24px; font-family: 'Google Sans'; }
+        .weather-city { font-size: 12px; color: var(--text-secondary); }
+
+        /* Biblioteca Pessoal (Barra de Progresso) */
+        .library-item {
+            margin-bottom: 16px;
+        }
+
+        .library-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0 0 8px 0;
+        }
+
+        .progress-track {
+            background-color: #202124;
+            border-radius: 4px;
+            height: 6px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background-color: var(--accent-blue);
+            height: 100%;
+            width: 60%;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: var(--accent-blue);
+            margin-top: 4px;
+            display: block;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            📰 AgregadorNews
+        </div>
+        <input type="text" class="search-bar" placeholder="Pesquise assuntos, locais e fontes">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: #8ab4f8; color: #202124; display: flex; align-items: center; justify-content: center; font-weight: bold;">AS</div>
+    </header>
+
+    <div class="layout">
+        
+        <!-- COLUNA PRINCIPAL: Feed de Notícias -->
+        <main>
+            <h2>Principais notícias verificadas</h2>
+
+            <!-- Notícia 1: Verificada (IA) -->
+            <article class="news-card">
+                <div class="news-content">
+                    <div class="news-source">
+                        <span style="width: 16px; height: 16px; background: #fff; border-radius: 2px; display: inline-block;"></span>
+                        TechNews • Há 2 horas
+                    </div>
+                    <h3 class="news-title">Avanços na Inteligência Artificial em 2026</h3>
+                    <p class="news-snippet">Modelos de linguagem locais ganham força no mercado tecnológico, reduzindo a dependência da nuvem e aumentando a privacidade dos usuários em tarefas diárias.</p>
+                    
+                    <div class="ai-badges">
+                        <div class="chip verified">✓ Groq AI: Fato Verificado (Score: 95)</div>
+                        <span style="color: var(--text-secondary);">Leitura: 3 min</span>
+                    </div>
+                </div>
+                <!-- Carregando a imagem direta da internet (Unsplash) -->
+                <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=240&auto=format&fit=crop" alt="Desenvolvimento de IA" class="news-thumbnail">
+            </article>
+
+            <!-- Notícia 2: Alerta de Fake News/Clickbait (Astronomia) -->
+            <article class="news-card">
+                <div class="news-content">
+                    <div class="news-source">
+                        <span style="width: 16px; height: 16px; background: #fff; border-radius: 2px; display: inline-block;"></span>
+                        Ciência Hoje • Há 3 horas
+                    </div>
+                    <h3 class="news-title" style="color: var(--text-primary);">Nova descoberta na astronomia muda tudo!</h3>
+                    <p class="news-snippet">Uma recente observação feita por telescópios terrestres levantou debates acalorados nas redes sociais sobre o futuro da exploração espacial...</p>
+                    
+                    <div class="ai-badges">
+                        <div class="chip alert">⚠ Groq AI: Título Sensacionalista (Score: 40)</div>
+                    </div>
+                </div>
+                <!-- Carregando a imagem direta da internet (Unsplash) -->
+                <img src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=240&auto=format&fit=crop" alt="Observação astronômica" class="news-thumbnail">
+            </article>
+
+        </main>
+
+        <!-- COLUNA LATERAL: Widgets -->
+        <aside class="sidebar">
+            
+            <!-- Widget de Clima -->
+            <div class="widget-box" style="padding: 16px;">
+                <div class="weather-widget">
+                    <span style="font-size: 32px;">⛅</span>
+                    <div>
+                        <div class="weather-temp">30°C</div>
+                        <div class="weather-city">Porto Velho, RO</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inovação 2: Biblioteca Pessoal -->
+            <div class="widget-box">
+                <h3 class="widget-title">📚 Continue lendo</h3>
+                
+                <div class="library-item">
+                    <h4 class="library-title">Avanços na Inteligência Artificial em 2026</h4>
+                    <div class="progress-track">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <span class="progress-text">60% Concluído</span>
+                </div>
+
+                <div class="library-item" style="margin-bottom: 0;">
+                    <h4 class="library-title">Senado discute agora o fim da escala 6x1</h4>
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: 15%;"></div>
+                    </div>
+                    <span class="progress-text">15% Concluído</span>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+</body>
+</html>

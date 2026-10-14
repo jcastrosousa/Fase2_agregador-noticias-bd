@@ -1,54 +1,61 @@
+# Projeto: Agregador de Notícias
+
+**Objetivo Geral**
+Desenvolver a infraestrutura de um banco de dados relacional voltado para uma plataforma de agregação de notícias. Na Fase 2, o sistema foi expandido para atuar como um gestor de biblioteca de mídia e preparar a estrutura para integrar ferramentas avançadas de Inteligência de Dados, visando combater a desinformação.
+
+**Inovações Implementadas (Fase 2)**
+- **Fact-Checking Automatizado (IA):** Estruturação do banco de dados para suportar a integração com a API da Groq para varredura de notícias, gerando *scores* de confiança e alertas de *clickbait* armazenados na tabela `AUDITORIA_NOTICIAS`.
+
+- **Biblioteca Pessoal:** Sistema de retenção de utilizadores que rastreia o progresso de leitura exato de cada artigo na tabela `BIBLIOTECA_PESSOAL`, permitindo retomar a leitura de forma sincronizada.
+
+- **Protótipo de Interface:** Um protótipo visual demonstrando a interface destas inovações na visão do utilizador final está disponível no arquivo `temp_dashboard.html`.
+
+**Estrutura do Banco e Diagrama (Mermaid)**
+O diagrama lógico abaixo ilustra o modelo de entidade-relacionamento (MER) atualizado da aplicação:
+
+```mermaid
 erDiagram
-    USUARIO ||--o{ INTERACAO_USUARIO : realiza
-    NOTICIA ||--o{ INTERACAO_USUARIO : recebe
+    USUARIOS ||--o{ COMENTARIOS : "faz"
+    USUARIOS ||--o{ REACOES : "registra"
+    USUARIOS ||--o{ BIBLIOTECA_PESSOAL : "gerencia"
+    NOTICIAS ||--o{ COMENTARIOS : "recebe"
+    NOTICIAS ||--o{ REACOES : "recebe"
+    NOTICIAS ||--o| AUDITORIA_NOTICIAS : "passa por"
+    NOTICIAS ||--o{ BIBLIOTECA_PESSOAL : "esta na"
 
-    NOTICIA ||--o{ NOTICIA_CATEGORIA : possui
-    CATEGORIA ||--o{ NOTICIA_CATEGORIA : classifica
-
-    NOTICIA ||--o{ NOTICIA_PALAVRA : possui
-    PALAVRA_CHAVE ||--o{ NOTICIA_PALAVRA : identifica
-
-    USUARIO {
+    USUARIOS {
         int id_usuario PK
-        string nome
-        string email
-        string senha
+        varchar nome
+        varchar email
     }
-
-    NOTICIA {
+    NOTICIAS {
         int id_noticia PK
-        string titulo
-        string resumo
-        string url
-        string fonte
-        datetime data_publicacao
+        varchar titulo
+        text link
     }
-
-    CATEGORIA {
-        int id_categoria PK
-        string nome
-        string descricao
-    }
-
-    NOTICIA_CATEGORIA {
-        int id_noticia FK
-        int id_categoria FK
-    }
-
-    PALAVRA_CHAVE {
-        int id_palavra PK
-        string nome
-    }
-
-    NOTICIA_PALAVRA {
-        int id_noticia FK
-        int id_palavra FK
-    }
-
-    INTERACAO_USUARIO {
-        int id_interacao PK
+    COMENTARIOS {
+        int id_comentario PK
         int id_usuario FK
         int id_noticia FK
-        string tipo_interacao
-        datetime data_interacao
+        text texto_comentario
+    }
+    REACOES {
+        int id_reacao PK
+        int id_usuario FK
+        int id_noticia FK
+        varchar tipo_reacao
+    }
+    AUDITORIA_NOTICIAS {
+        int id_auditoria PK
+        int id_noticia FK
+        int score_confianca
+        boolean alerta_clickbait
+        text justificativa_ia
+    }
+    BIBLIOTECA_PESSOAL {
+        int id_biblioteca PK
+        int id_usuario FK
+        int id_noticia FK
+        int progresso_leitura
+        varchar status
     }
