@@ -1,3 +1,6 @@
+> **Versão revisada da Fase 2:** [Acessar modelo ER, scripts SQL e protótipo](versao-corrigida/README.md)
+> O conteúdo abaixo corresponde à entrega original, preservada para histórico.
+
 # Projeto: Agregador de Notícias
 
 **Objetivo Geral**
@@ -59,3 +62,4 @@ erDiagram
         int progresso_leitura
         varchar status
     }
+```

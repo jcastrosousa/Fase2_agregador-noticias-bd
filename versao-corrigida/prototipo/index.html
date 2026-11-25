@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>AgregadorNews — Protótipo da Fase 2</title>
+  <style>
+    :root { color-scheme:dark; --bg:#111827;--panel:#1b2638;--panel2:#243146;--line:#37465e;--text:#f1f5f9;--muted:#b3c0d0;--blue:#87b9ff;--green:#9fe0c0;--amber:#ffd396; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    header { border-bottom:1px solid var(--line); background:#162033; }
+    .top { max-width:1150px; margin:auto; padding:18px 24px; display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap; }
+    .brand { font-size:1.25rem; font-weight:800;letter-spacing:-.03em; }
+    .brand span { color:var(--blue); }
+    .tag { font-size:.79rem;border:1px solid var(--line);border-radius:999px; padding:6px 12px; color:var(--muted); }
+    .container { max-width:1150px; margin:auto; padding:34px 24px 60px; }
+    .intro { margin-bottom:28px; }
+    .eyebrow { color:var(--blue); font-size:.82rem; font-weight:700;letter-spacing:.07em;text-transform:uppercase; }
+    h1 { font-size:clamp(1.6rem,3.6vw,2.5rem);line-height:1.2;margin:7px 0 10px; }
+    h2 { font-size:1.15rem; margin:0 0 15px; }
+    h3 { font-size:1.09rem;line-height:1.35;margin:0 0 7px; }
+    p { margin:0; }
+    .muted { color:var(--muted); }
+    .intro p { max-width:800px; }
+    .notice { margin:22px 0 0; padding:13px 16px; background:#2c2d36;border:1px solid #6f6471;border-radius:12px; color:#f1d8e0;font-size:.9rem; }
+    .layout { display:grid; grid-template-columns:minmax(0,1fr) 320px;gap:26px;align-items:start; }
+    .panel { border:1px solid var(--line);border-radius:18px; padding:22px;background:var(--panel); }
+    .search { width:100%;background:#111b2c;border:1px solid var(--line);color:var(--text); border-radius:10px;padding:12px 14px;font:inherit; margin-bottom:12px; }
+    .search:focus-visible,button:focus-visible { outline:3px solid var(--blue);outline-offset:3px; }
+    .story { padding:20px 0; border-bottom:1px solid var(--line); }
+    .story:last-child { border-bottom:0;padding-bottom:4px; }
+    .source { color:var(--muted);font-size:.81rem; margin-bottom:7px; }
+    .description { font-size:.91rem;color:var(--muted);margin-bottom:14px; }
+    .badge { display:inline-flex;align-items:center;font-size:.77rem;font-weight:750;border-radius:999px;padding:5px 10px;margin-right:6px;margin-bottom:7px; }
+    .positive { color:var(--green);border:1px solid #387862; background:#17342f; }
+    .warning { color:var(--amber);border:1px solid #82623a; background:#3a2b1d; }
+    .actions { margin-top:9px; display:flex;gap:10px;align-items:center; flex-wrap:wrap; }
+    button { cursor:pointer;font:inherit;font-size:.85rem;font-weight:700; border-radius:9px;padding:9px 12px;background:#28436a;border:1px solid #5477a9;color:#e9f1ff; }
+    button:hover { background:#355987; }
+    button:disabled { opacity:.65;cursor:default; }
+    .library-item { padding:15px 0;border-bottom:1px solid var(--line); }
+    .library-item:last-child { border:0;padding-bottom:0; }
+    .library-title { margin-bottom:8px; font-size:.91rem;font-weight:700; }
+    .track { height:9px;border-radius:99px;background:#111827;overflow:hidden; }
+    .fill { height:100%;border-radius:99px;background:var(--blue); }
+    .library-footer { display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:7px;font-size:.8rem;color:var(--muted); }
+    .empty { font-size:.89rem;color:var(--muted);padding:14px 0; }
+    .small { color:var(--muted);font-size:.8rem;margin-top:14px; }
+    footer { border-top:1px solid var(--line);padding:25px 24px;color:var(--muted);font-size:.85rem;text-align:center; }
+    [hidden] { display:none !important; }
+    @media(max-width:780px) { .layout { grid-template-columns:1fr; } .container { padding:22px 16px 45px; } .top { padding:15px 16px; } .panel { padding:18px; } }
+  </style>
+</head>
+<body>
+  <header><div class="top"><div class="brand">📰 Agregador<span>News</span></div><div class="tag">Fase 2 • Protótipo acadêmico</div></div></header>
+  <div class="container">
+    <div class="intro">
+      <div class="eyebrow">Inovação e prototipação</div>
+      <h1>Notícias, avaliações e leitura em um só lugar</h1>
+      <p class="muted">Demonstração das tabelas <strong>auditoria_noticias</strong> e <strong>biblioteca_pessoal</strong>. Os dados iniciais correspondem aos exemplos do script SQL da Fase 2.</p>
+      <div class="notice" role="note"><strong>Aviso importante:</strong> pontuações, alertas, textos e fontes são <strong>fictícios</strong>. Este protótipo não verifica fatos, não utiliza a Groq, não acessa o PostgreSQL e não salva suas alterações. As ações abaixo funcionam somente na página aberta.</div>
+    </div>
+    <div class="layout">
+      <main class="panel" aria-label="Notícias">
+        <h2>Feed de notícias — demonstração</h2>
+        <input class="search" id="busca" type="search" placeholder="Filtrar notícias nesta tela" aria-label="Filtrar notícias demonstrativas">
+        <div id="feed">
+          <article class="story" data-id="1" data-title="Avanços na Inteligência Artificial em 2026">
+            <div class="source">Notícia fictícia 1 • Tecnologia</div>
+            <h3>Avanços na Inteligência Artificial em 2026</h3>
+            <p class="description">Exemplo de artigo sobre modelos de linguagem e computação local. Descrição ilustrativa usada para demonstrar a interface.</p>
+            <span class="badge positive">Pontuação simulada: 95/100</span>
+            <span class="badge positive">Alerta clickbait: não</span>
+            <p class="small">Justificativa cadastrada no exemplo SQL: “Conteúdo técnico verificado e condizente com o título.” Essa frase é fictícia, não uma constatação verificada.</p>
+            <div class="actions"><button type="button" data-save="1" disabled>✓ Na biblioteca demonstrativa</button></div>
+          </article>
+          <article class="story" data-id="2" data-title="Nova descoberta na astronomia muda tudo!">
+            <div class="source">Notícia fictícia 2 • Ciência</div>
+            <h3>Nova descoberta na astronomia muda tudo!</h3>
+            <p class="description">Notícia de demonstração com título sensacionalista e pontuação de confiança ilustrativa. Não é uma notícia real verificada.</p>
+            <span class="badge warning">Pontuação simulada: 40/100</span>
+            <span class="badge warning">Alerta clickbait: sim</span>
+            <p class="small">Justificativa cadastrada no exemplo SQL: “O título exagera a descoberta. O texto original não confirma vida extraterrestre.” Texto de teste, não resultado de checagem.</p>
+            <div class="actions"><button type="button" data-save="2">+ Salvar na biblioteca (simulação)</button></div>
+          </article>
+        </div>
+        <p class="empty" id="sem-resultados" hidden>Nenhuma notícia demonstrativa corresponde à busca.</p>
+      </main>
+      <aside class="panel" aria-label="Biblioteca pessoal">
+        <h2>📚 Biblioteca pessoal</h2>
+        <p class="muted" style="font-size:.88rem">Exemplo do usuário 1. O banco contém inicialmente a notícia 1 com progresso de 60% e status “Lendo”.</p>
+        <div id="library" aria-live="polite"></div>
+        <p class="small">Use “+10%” para testar a interface. Os valores voltam ao estado inicial quando a página é recarregada.</p>
+      </aside>
+    </div>
+  </div>
+  <footer>Protótipo visual de estudo • Fase 2 — Agregador de Notícias • Não representa um serviço real de verificação de fatos.</footer>
+  <script>
+    // Estado exclusivamente local, sem backend ou persistência.
+    const titulos = {
+      1: 'Avanços na Inteligência Artificial em 2026',
+      2: 'Nova descoberta na astronomia muda tudo!'
+    };
+    const biblioteca = [{id: 1, progresso: 60}]; // Igual ao exemplo inserido no PostgreSQL.
+    const area = document.getElementById('library');
+    function renderBiblioteca() {
+      area.replaceChildren();
+      for (const item of biblioteca) {
+        const bloco = document.createElement('div');
+        bloco.className = 'library-item';
+        const titulo = document.createElement('div');
+        titulo.className = 'library-title';
+        titulo.textContent = titulos[item.id];
+        const trilho = document.createElement('div');
+        trilho.className = 'track';
+        trilho.setAttribute('role','progressbar');
+        trilho.setAttribute('aria-label','Progresso de leitura');
+        trilho.setAttribute('aria-valuemin','0');
+        trilho.setAttribute('aria-valuemax','100');
+        trilho.setAttribute('aria-valuenow',String(item.progresso));
+        const preenchimento = document.createElement('div');
+        preenchimento.className = 'fill';
+        preenchimento.style.width = item.progresso + '%';
+        trilho.append(preenchimento);
+        const rodape = document.createElement('div');
+        rodape.className = 'library-footer';
+        const status = document.createElement('span');
+        status.textContent = `${item.progresso}% • ${item.progresso === 100 ? 'Concluido' : item.progresso === 0 ? 'Na Fila' : 'Lendo'}`;
+        const mais = document.createElement('button');
+        mais.type = 'button';
+        mais.textContent = '+10%';
+        mais.disabled = item.progresso >= 100;
+        mais.setAttribute('aria-label',`Aumentar progresso de ${titulos[item.id]}`);
+        mais.addEventListener('click', () => {
+          item.progresso = Math.min(100, item.progresso + 10);
+          renderBiblioteca();
+        });
+        rodape.append(status,mais);
+        bloco.append(titulo,trilho,rodape);
+        area.append(bloco);
+      }
+    }
+    document.querySelectorAll('[data-save]').forEach(botao => {
+      botao.addEventListener('click', () => {
+        const id = Number(botao.dataset.save);
+        if (biblioteca.some(item => item.id === id)) return;
+        biblioteca.push({id,progresso:0});
+        botao.textContent = '✓ Na biblioteca demonstrativa';
+        botao.disabled = true;
+        renderBiblioteca();
+      });
+    });
+    document.getElementById('busca').addEventListener('input', evento => {
+      const filtro = evento.target.value.toLocaleLowerCase('pt-BR');
+      let visiveis = 0;
+      document.querySelectorAll('.story').forEach(card => {
+        const corresponde = card.dataset.title.toLocaleLowerCase('pt-BR').includes(filtro);
+        card.hidden = !corresponde;
+        if (corresponde) visiveis++;
+      });
+      document.getElementById('sem-resultados').hidden = visiveis !== 0;
+    });
+    renderBiblioteca();
+  </script>
+</body>
+</html>
